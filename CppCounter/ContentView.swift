@@ -1,24 +1,38 @@
-//
-//  ContentView.swift
-//  CppCounter
-//
-//  Created by Mark Edmunds on 21/09/2023.
-//
-
 import SwiftUI
+import Combine
 
-struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
-    }
+class CounterViewModel: ObservableObject {
+  private let counter = CounterWrapper()
+  
+  @Published var value: Int32 = 0
+  
+  func increment() {
+    counter.increment()
+    value = counter.getValue()
+  }
 }
 
+struct ContentView: View {
+  @StateObject private var viewModel = CounterViewModel()
+  
+  var body: some View {
+    VStack(spacing: 20) {
+      Text("Count: \(viewModel.value)")
+        .font(.largeTitle)
+      
+      Button("Increment") {
+        viewModel.increment()
+      }
+      .padding()
+      .background(Color.blue)
+      .foregroundColor(.white)
+      .cornerRadius(8)
+    }
+    .padding()
+  }
+}
+
+
 #Preview {
-    ContentView()
+  ContentView()
 }
